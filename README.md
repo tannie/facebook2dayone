@@ -9,7 +9,8 @@ Optionally you can create a 'config' file:
 
 at the same locating from where you run the script (or edit the path)
 
-Alternatively edit line 4 in the script
+Alternatively edit line 4 in the script:
+`opts = { 'journal' => 'Facebook', 'timezone' => nil }`
 
 
 Then do:
