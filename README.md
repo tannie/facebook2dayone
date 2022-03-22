@@ -17,4 +17,7 @@ Then do:
 `./fb2do.rb <path>/posts/your_posts.json`
 
 
-If you want to chop your post-file into smaller sections, feel free to use [this gist](https://gist.github.com/tannie/23872e8f265a7077c875162d5ae348a0)
+If you want to chop your posts-file into smaller sections, feel free to use [this gist](https://gist.github.com/tannie/23872e8f265a7077c875162d5ae348a0)
+
+ ## Future plans:
+- check the timestamp, compare to optional argument and only import later posts
