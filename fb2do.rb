@@ -13,8 +13,6 @@ $dir = File.dirname(ARGV[0])
 
 if (opts['timezone'] != nil)
   extraoptions.concat("-z #{opts['timezone']} ")
-  timezone = opts['timezone']
-  # print "timezone is defined: #{timezone}, #{opts['journal']}\n"
 end
 bytes_re = /((?:\\\\)+|[^\\])(?:\\u[0-9a-f]{4})+/
 
@@ -32,76 +30,80 @@ facebook.each do |item|
   postTextComplete = ""
   location = ""
   photooptions = ""
-  unless (defined?(item['data'][0]['post'])).nil?
-    if item['title'].to_s["Timeline"]
-      postTextComplete.concat("#{item['title']}\n\n")
-    end
-    if item['title'].to_s["timeline"]
-      postTextComplete.concat("#{item['title']}\n\n")
-    end
-    unless (defined?(item['data'][0]['post'])).nil?
-      posttext = "#{item['data'][0]['post']}"
-      postTextComplete.concat("#{posttext}")
-    end
-    unless (defined?(item['attachments'][0])).nil?
-      item['attachments'].each do |attachment|
-        # puts "attachment"
-        unless (defined?(item['attachments'][0]['data'])).nil?
-          item['attachments'].each do |attachments|
-            # puts "checking places"
-            unless (defined?(attachments['data'][0]['place'][0])).nil?
-              puts "place found"
-              attachments['data'].each do |key1, value1| # each item
-                unless (defined?(key1['place']['coordinate'])).nil?
-                  latitude = key1['place']['coordinate']['latitude']
-                  longitude = key1['place']['coordinate']['longitude']
-                  location = " --coordinate #{latitude} #{longitude}"
-                end # coordinates
-              end # each place
-            end # place
-            # puts "checking media"
-            unless (defined?(attachments['data'][0]['media'][0])).nil?
-              puts "media pic found"
-              photooptions.concat(" -p")
-              attachments['data'].each do |key1, value1|
-                unless (defined?(key1['media']['uri'])).nil?
-                  dir = File.dirname(ARGV[0])
-                  newdir = dir.gsub("posts", "")
-                  photooptions.concat(" #{newdir}/#{key1['media']['uri']}")
-                end # unless media uri defined
-              end # each attachment for media
-            end # unless media defined
-            # puts "checking urls"
-            unless (defined?(attachments['data'][0]['external_context'][0])).nil?
-              if (item['attachments'][0]['data'][0]['external_context']['source'] == "Goodreads")
-                postTextComplete.concat("#{item['title']}\n")
-              else
-                # print "ext is defined\n"
-                unless (defined?(attachments['data'][0]['external_context']['url'])).nil?
-                  url = attachments['data'][0]['external_context']['url']
-                  if posttext =~ /url/
-                  # do nothing
+  #  unless (defined?(item['data'][0]['post'])).nil?
+  if item['title'].to_s["Timeline"]
+    postTextComplete.concat("#{item['title']}\n\n")
+  end
+  if item['title'].to_s["timeline"]
+    postTextComplete.concat("#{item['title']}\n\n")
+  end
+  if defined?(item['data'][0]['post'])
+    # puts item['data'][0]['post']
+    posttext = "#{item['data'][0]['post']}"
+    postTextComplete.concat("#{item['data'][0]['post']}")
+  else
+    posttext = "#{item['title']}"
+    postTextComplete.concat("#{posttext}")
+  end
+  puts postTextComplete
+  unless (defined?(item['attachments'][0])).nil?
+    item['attachments'].each do |attachment|
+      # puts "attachment"
+      unless (defined?(item['attachments'][0]['data'])).nil?
+        item['attachments'].each do |attachments|
+          # puts "checking places"
+          unless (defined?(attachments['data'][0]['place'][0])).nil?
+            attachments['data'].each do |key1, value1| # each item
+              unless (defined?(key1['place']['coordinate']['latitude'])).nil?
+                puts "place found"
+                latitude = key1['place']['coordinate']['latitude']
+                longitude = key1['place']['coordinate']['longitude']
+                location = " --coordinate #{latitude} #{longitude}"
+              end # coordinates
+            end # each place
+          end # place
+          # puts "checking media"
+          unless (defined?(attachments['data'][0]['media'][0])).nil?
+            photooptions.concat(" -p")
+            attachments['data'].each do |key1, value1|
+              unless (defined?(key1['media']['uri'])).nil?
+                puts "media pic found"
+                dir = File.dirname(ARGV[0])
+                newdir = dir.gsub("posts", "")
+                photooptions.concat(" #{newdir}/#{key1['media']['uri']}")
+              end # unless media uri defined
+            end # each attachment for media
+          end # unless media defined
+          # puts "checking urls"
+          unless (defined?(attachments['data'][0]['external_context'][0])).nil?
+            if (item['attachments'][0]['data'][0]['external_context']['source'] == "Goodreads")
+              # postTextComplete.concat("#{item['title']}\n")
+            else
+              # print "ext is defined\n"
+              unless (defined?(attachments['data'][0]['external_context']['url'])).nil?
+                url = attachments['data'][0]['external_context']['url']
+                if posttext["#{url}"]
+                # do nothing
+                else
+                  if (item['attachments'][0]['data'][0]['external_context']['name'] == nil)
+                    postTextComplete.concat("\n\n#{url}")
                   else
-                    if (item['attachments'][0]['data'][0]['external_context']['name'] == nil)
-                      postTextComplete.concat("\n\n#{url}")
-                    else
-                      urltitle = item['attachments'][0]['data'][0]['external_context']['name']
-                      postTextComplete.concat("\n[#{urltitle}](#{url})")
-                    end # external context name
-                  end # check for url in posttext
-                end
-              end # goodreads
-            end # external context
-          end # each attachments
-        end # unless attachments
-      end
+                    urltitle = item['attachments'][0]['data'][0]['external_context']['name']
+                    postTextComplete.concat("\n#{urltitle}\n\n#{url}")
+                  end # external context name
+                end # check for url in posttext
+              end
+            end # goodreads
+          end # external context
+        end # each attachments
+      end # unless attachments
     end
-    puts postTextComplete
+ end # defined attachments
+    # puts postTextComplete
     f = File.new("/tmp/" + `uuidgen`.strip + ".txt", "w+")
     f.puts postTextComplete
     f.close
 
-    cmd = `cat #{f.path.strip} | dayone2 new  -d '#{humandate}' #{alloptions} #{location} #{photooptions}`;
-
-  end
+    cmd = `cat #{f.path.strip} | dayone2 new  -d '#{humandate}' #{alloptions} #{location} #{photooptions}`
+    # puts cmd
 end
