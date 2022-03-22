@@ -32,7 +32,7 @@ facebook.each do |item|
   postTextComplete = ""
   location = ""
   photooptions = ""
-  unless (defined?(item['data']['post'])).nil?
+  unless (defined?(item['data'][0]['post'])).nil?
     if item['title'].to_s["Timeline"]
       postTextComplete.concat("#{item['title']}\n\n")
     end
@@ -44,7 +44,7 @@ facebook.each do |item|
       postTextComplete.concat("#{posttext}")
     end
     unless (defined?(item['attachments'][0])).nil?
-      item['attachments'][0].each do |attachment|
+      item['attachments'].each do |attachment|
         # puts "attachment"
         unless (defined?(item['attachments'][0]['data'])).nil?
           item['attachments'].each do |attachments|
@@ -75,21 +75,22 @@ facebook.each do |item|
             unless (defined?(attachments['data'][0]['external_context'][0])).nil?
               if (item['attachments'][0]['data'][0]['external_context']['source'] == "Goodreads")
                 postTextComplete.concat("#{item['title']}\n")
-              end # goodreads
-              # print "ext is defined\n"
-              unless (defined?(attachments['data'][0]['external_context']['url'])).nil?
-                url = attachments['data'][0]['external_context']['url']
-                if item['data'][0]['post']["#{url}"]
-                # do nothing
-                else
-                  if (item['attachments'][0]['data'][0]['external_context']['name'] == nil)
-                    postTextComplete.concat("\n\n#{url}")
+              else
+                # print "ext is defined\n"
+                unless (defined?(attachments['data'][0]['external_context']['url'])).nil?
+                  url = attachments['data'][0]['external_context']['url']
+                  if item['data'][0]['post'][url]
+                  # do nothing
                   else
-                    urltitle = item['attachments'][0]['data'][0]['external_context']['name']
-                    postTextComplete.concat("\n[#{urltitle}](#{url})")
-                  end # external context name
-                end # check for url in posttext
-              end
+                    if (item['attachments'][0]['data'][0]['external_context']['name'] == nil)
+                      postTextComplete.concat("\n\n#{url}")
+                    else
+                      urltitle = item['attachments'][0]['data'][0]['external_context']['name']
+                      postTextComplete.concat("\n[#{urltitle}](#{url})")
+                    end # external context name
+                  end # check for url in posttext
+                end
+              end # goodreads
             end # external context
           end # each attachments
         end # unless attachments
