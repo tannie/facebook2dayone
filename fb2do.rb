@@ -79,7 +79,7 @@ facebook.each do |item|
                 # print "ext is defined\n"
                 unless (defined?(attachments['data'][0]['external_context']['url'])).nil?
                   url = attachments['data'][0]['external_context']['url']
-                  if item['data'][0]['post'][url]
+                  if posttext =~ /url/
                   # do nothing
                   else
                     if (item['attachments'][0]['data'][0]['external_context']['name'] == nil)
