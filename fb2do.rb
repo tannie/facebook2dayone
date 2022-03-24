@@ -1,6 +1,7 @@
 #!/usr/bin/ruby
 
 require "json"
+require "csv"
 opts = { 'journal' => 'Facebook', 'timezone' => nil }
 if File.file?('config')
   IO.readlines("config").each do |ec|
@@ -25,7 +26,8 @@ facebook = JSON.load(txt)
 facebook.each do |item|
   humandate = `/bin/date -r #{item['timestamp']} '+%Y-%m-%d %H:%M:%S'`
   puts "\n#{humandate} (#{item['timestamp']})"
-next if ARGV[1].to_i + 1 > item['timestamp']
+  next if ARGV[1].to_i + 1 > item['timestamp']
+
   # puts item['title']
   alloptions = extraoptions
   postTextComplete = ""
@@ -38,15 +40,25 @@ next if ARGV[1].to_i + 1 > item['timestamp']
   if item['title'].to_s["timeline"]
     postTextComplete.concat("#{item['title']}\n\n")
   end
-  if defined?(item['data'][0]['post'])
+  if defined?(item['attachments'][0]['data'][0]['media']['description'])
+	posttext = "#{item['attachments'][0]['data'][0]['media']['description']}"
+    postTextComplete.concat("#{posttext}")
+  elsif defined?(item['data'][0]['post'])
     # puts item['data'][0]['post']
     posttext = "#{item['data'][0]['post']}"
-    postTextComplete.concat("#{item['data'][0]['post']}")
+    postTextComplete.concat("#{posttext}")
   else
     posttext = "#{item['title']}"
     postTextComplete.concat("#{posttext}")
   end
-  puts postTextComplete
+unless (defined?(item['tags'][0])).nil?
+	people = []
+	item['tags'].each do |person|
+	people << person['name'] 
+	end
+	postTextComplete.concat("\n👥: ")
+	postTextComplete.concat(people.to_csv.gsub(/,/,', '))
+end
   unless (defined?(item['attachments'][0])).nil?
     item['attachments'].each do |attachment|
       # puts "attachment"
@@ -99,12 +111,17 @@ next if ARGV[1].to_i + 1 > item['timestamp']
         end # each attachments
       end # unless attachments
     end
- end # defined attachments
-    # puts postTextComplete
-    f = File.new("/tmp/" + `uuidgen`.strip + ".txt", "w+")
-    f.puts postTextComplete
-    f.close
+  end # defined attachments
+  #puts postTextComplete.length
+  next if postTextComplete.length < 1
+  #puts postTextComplete
+  postTextComplete.gsub!(/@\[([0-9]*)\:[0-9]*\:(.*)\]/,'[\2](https://www.facebook.com/\1)')
+  #puts postTextComplete
 
-    cmd = `cat #{f.path.strip} | dayone2 new  -d '#{humandate}' #{alloptions} #{location} #{photooptions}`
-    # puts cmd
+  f = File.new("/tmp/" + `uuidgen`.strip + ".txt", "w+")
+  f.puts postTextComplete
+  f.close
+
+  cmd = `cat #{f.path.strip} | dayone2 new  -d '#{humandate}' #{alloptions} #{location} #{photooptions}`
+  # puts cmd
 end

@@ -7,7 +7,9 @@ Optionally you can create a 'config' file:
 
 `timezone: Europe/Amsterdam`
 
-at the same locating from where you run the script (or edit the path)
+at the same locating from where you run the script (or edit the path).
+
+Make sure the dayone2 executable is on your PATH (select DayOne > Install Command Line Tools...).
 
 Alternatively edit line 4 in the script:
 `opts = { 'journal' => 'Facebook', 'timezone' => nil }`
@@ -23,6 +25,8 @@ If you want to chop your posts-file into smaller sections, feel free to use [thi
 
  ## Future plans:
 ✓ check the timestamp, compare to optional argument and only import later posts
+✓ replace @[xxxxx:2048:Name of person] with a link to their profile (the xxxx is a number that makes it possible to use https://www.facebook.com/xxxxx to get to their profile)
+✓ add people's names when they are tagged
 
 
 ## General info:
