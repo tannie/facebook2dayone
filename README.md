@@ -23,9 +23,11 @@ If you already imported posts before, use the timestamp (in seconds) from the la
 
 If you want to chop your posts-file into smaller sections, feel free to use [this gist](https://gist.github.com/tannie/23872e8f265a7077c875162d5ae348a0)
 
- ## Future plans:
-✓ check the timestamp, compare to optional argument and only import later posts
-✓ replace @[xxxxx:2048:Name of person] with a link to their profile (the xxxx is a number that makes it possible to use https://www.facebook.com/xxxxx to get to their profile)
+ ## (former) Future plans:
+✓ check the timestamp, compare to optional argument and only import later posts  
+
+✓ replace @[xxxxx:2048:Name of person] with a link to their profile (the xxxx is a number that makes it possible to use https://www.facebook.com/xxxxx to get to their profile) 
+
 ✓ add people's names when they are tagged
 
 
