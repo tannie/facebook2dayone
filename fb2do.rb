@@ -25,6 +25,7 @@ facebook = JSON.load(txt)
 facebook.each do |item|
   humandate = `/bin/date -r #{item['timestamp']} '+%Y-%m-%d %H:%M:%S'`
   puts "\n#{humandate} (#{item['timestamp']})"
+next if ARGV[1].to_i + 1 > item['timestamp']
   # puts item['title']
   alloptions = extraoptions
   postTextComplete = ""
