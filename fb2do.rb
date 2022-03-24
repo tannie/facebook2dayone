@@ -10,7 +10,7 @@ if File.file?('config')
   end
 end
 extraoptions = "-j #{opts['journal']} "
-$dir = File.dirname(ARGV[0])
+$dir = File.dirname(File.expand_path(ARGV[0]))
 
 if (opts['timezone'] != nil)
   extraoptions.concat("-z #{opts['timezone']} ")
@@ -81,7 +81,7 @@ end
             attachments['data'].each do |key1, value1|
               unless (defined?(key1['media']['uri'])).nil?
                 puts "media pic found"
-                dir = File.dirname(ARGV[0])
+                dir = File.dirname(File.expand_path(ARGV[0]))
                 newdir = dir.gsub("posts", "")
                 photooptions.concat(" #{newdir}/#{key1['media']['uri']}")
               end # unless media uri defined
@@ -90,7 +90,13 @@ end
           # puts "checking urls"
           unless (defined?(attachments['data'][0]['external_context'][0])).nil?
             if (item['attachments'][0]['data'][0]['external_context']['source'] == "Goodreads")
-              # postTextComplete.concat("#{item['title']}\n")
+                  if (item['attachments'][0]['data'][0]['external_context']['name'] == nil)
+                    postTextComplete.concat("\n\n#{url}")
+                  else
+                    url = attachments['data'][0]['external_context']['url']
+                    urltitle = item['attachments'][0]['data'][0]['external_context']['name']
+                    postTextComplete.concat("\n[#{urltitle}](#{url})")
+                  end # external context name
             else
               # print "ext is defined\n"
               unless (defined?(attachments['data'][0]['external_context']['url'])).nil?
