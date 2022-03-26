@@ -48,9 +48,9 @@ Your 'Downloads' folder now looks like this:
 'README.md' is the file you are reading now
 
 'config' contains the following:
-`journal: Facebook`
 
-`timezone: Europe/Amsterdam`
+	journal: Facebook
+	timezone: Europe/Amsterdam
 
 You can open this file with any text-editor to change the timezone. You can also delete the file if you don't care about the correct times, but if you don't, the script will create entries based on the timezone in Amsterdam.
 
