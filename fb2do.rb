@@ -45,7 +45,6 @@ facebook.each do |item|
 	posttext = "#{item['attachments'][0]['data'][0]['media']['description']}"
     postTextComplete.concat("#{posttext}")
   elsif defined?(item['data'][0]['post'])
-    # puts item['data'][0]['post']
     posttext = "#{item['data'][0]['post']}"
     postTextComplete.concat("#{posttext}")
   else
@@ -62,7 +61,6 @@ unless (defined?(item['tags'][0])).nil?
 end
   unless (defined?(item['attachments'][0])).nil?
     item['attachments'].each do |attachment|
-      # puts "attachment"
       unless (defined?(item['attachments'][0]['data'])).nil?
         item['attachments'].each do |attachments|
           # puts "checking places"
@@ -120,8 +118,7 @@ end
     end
   end # defined attachments
   #puts postTextComplete.length
-  next if postTextComplete.length < 1
-  #puts postTextComplete
+  next if postTextComplete.length < 1 # skip empty posts
   postTextComplete.gsub!(/@\[([0-9]*)\:[0-9]*\:(.*)\]/,'[\2](https://www.facebook.com/\1)')
   #puts postTextComplete
 
