@@ -3,7 +3,8 @@
 require "json"
 require "csv"
 opts = { 'journal' => 'Facebook', 'timezone' => nil }
-if File.file?('config')
+scriptdir = File.dirname(__FILE__)
+if File.file?('#{scriptdir}/config')
   IO.readlines("config").each do |ec|
     a = ec.strip.split(/\s*:\s*/)
     opts[a[0]] = a[1]
