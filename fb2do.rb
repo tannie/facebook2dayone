@@ -12,6 +12,15 @@ if File.file?('#{scriptdir}/config')
 end
 extraoptions = "-j #{opts['journal']} "
 $dir = File.dirname(File.expand_path(ARGV[0]))
+`touch ~/.lastFBpost`
+checkfrom = `cat ~/.lastFBpost`
+puts "check"
+
+if ARGV[1]
+checkfrom = ARGV[1]
+end
+
+puts checkfrom
 
 if (opts['timezone'] != nil)
   extraoptions.concat("-z #{opts['timezone']} ")
@@ -27,14 +36,14 @@ facebook = JSON.load(txt)
 facebook.each do |item|
   humandate = `/bin/date -r #{item['timestamp']} '+%Y-%m-%d %H:%M:%S'`
   puts "\n#{humandate} (#{item['timestamp']})"
-  next if ARGV[1].to_i + 1 > item['timestamp']
-
+  next if checkfrom.to_i + 1 > item['timestamp']
   # puts item['title']
   alloptions = extraoptions
   postTextComplete = ""
   location = ""
   photooptions = ""
-  #  unless (defined?(item['data'][0]['post'])).nil?
+  
+  #  edit the text with 'Timeline/timeline' if you don't use Facebook in English
   if item['title'].to_s["Timeline"]
     postTextComplete.concat("#{item['title']}\n\n")
   end
@@ -127,5 +136,5 @@ end
   f.close
 
   cmd = `cat #{f.path.strip} | dayone2 new  -d '#{humandate}' #{alloptions} #{location} #{photooptions}`
-  # puts cmd
+  `echo #{item['timestamp']} > ~/.lastFBpost`
 end
