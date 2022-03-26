@@ -60,7 +60,7 @@ In Finder go to 'Applications' and then 'Utilities'. Open 'Terminal.app'
 
 Then type:
 
-`~/Downloads/fb2do.rb ~/Downloads/<yourname>/posts/your_posts.json` (press enter)
+`~/Downloads/fb2do.rb ~/Downloads/<yourname>/posts/your_posts_1.json` (press enter)
 
 (The '~' means your user-folder, where you keep all your documents and downloads)
 
@@ -83,7 +83,7 @@ Scratch that! The script will now save the last timestamp to "~/.lastFBpost"
 If you already imported posts before, the script will read this timestamp and skip everything before that time. This will also work if you create a new archive on Facebook and download all your data again, later.
 You can also add a timestamp as an argument to make it go from there (this overrides the last saved timestamp)
 
-`~/Downloads/fb2do.rb ~/Downloads/<yourname>/posts/your_posts.json 1646405898` (press enter)
+`~/Downloads/fb2do.rb ~/Downloads/<yourname>/posts/your_posts_1.json 1646405898` (press enter)
 
 
  ## (former) Future plans:
