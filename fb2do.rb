@@ -128,7 +128,7 @@ end
   end # defined attachments
   #puts postTextComplete.length
   next if postTextComplete.length < 1 # skip empty posts
-  postTextComplete.gsub!(/@\[([0-9]*)\:[0-9]*\:(.*)\]/,'[\2](https://www.facebook.com/\1)')
+  postTextComplete.gsub!(/@\[([0-9]*)\:[0-9]*\:(.*?)\]/,'[\2](https://www.facebook.com/\1)')
   #puts postTextComplete
 
   f = File.new("/tmp/" + `uuidgen`.strip + ".txt", "w+")
